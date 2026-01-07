@@ -18,7 +18,8 @@ loader = UnstructuredMarkdownLoader(markdown_path)
 docs = loader.load()
 
 # 文本分块
-text_splitter = RecursiveCharacterTextSplitter()
+# 默认参数 chunk_size=4000（块大小）和 chunk_overlap=200（块重叠）
+text_splitter = RecursiveCharacterTextSplitter(chunk_size=6000, chunk_overlap=400)
 chunks = text_splitter.split_documents(docs)
 
 # 中文嵌入模型
@@ -62,3 +63,13 @@ docs_content = "\n\n".join(doc.page_content for doc in retrieved_docs)
 
 answer = llm.invoke(prompt.format(question=question, context=docs_content))
 print(answer)
+print(answer.content)
+
+
+
+# chunk size 和 overlap 参数可以根据具体需求进行调整，以优化文本分块效果。
+# 比如，在默认的4000和200的基础上，更加接近主题理解内容和减少冗余信息。所以回答的answer更接近全文主题
+# 在尝试更小的 chunk size 和 overlap 参数时，模型回答的方向发生了明显的改变。更加偏向于细节信息，而不是整体主题理解。
+# 在尝试更大的 chunk size 和 overlap 参数时，模型回答的内容变得更加冗长，回答的信息更加的具体和详细了。原因是因为这个设置下，文本块包含了大部分的上下文信息。
+# 通过实验发现，chunk size 和 overlap 参数对模型的回答质量和方向有显著影响。
+# 但是chunk 大小不是越大越好，而是要根据任务目标和文本内容来进行合理设置。
