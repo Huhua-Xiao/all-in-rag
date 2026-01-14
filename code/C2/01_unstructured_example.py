@@ -1,12 +1,14 @@
-from unstructured.partition.auto import partition
+# from unstructured.partition.auto import partition
+from unstructured.partition.pdf import partition_pdf
 
 # PDF文件路径
 pdf_path = "../../data/C2/pdf/rag.pdf"
 
 # 使用Unstructured加载并解析PDF文档
-elements = partition(
+elements = partition_pdf(
     filename=pdf_path,
-    content_type="application/pdf"
+    content_type="application/pdf",
+    strategy="hi_res",
 )
 
 # 打印解析结果
@@ -23,3 +25,6 @@ for i, element in enumerate(elements, 1):
     print(f"Element {i} ({element.category}):")
     print(element)
     print("=" * 60)
+
+
+# 使用 hi_res 的时候找到什么很明显的区别，但是在使用ocr_only 的时候，OCR崩掉了，出现了很多乱七八糟的内容。
